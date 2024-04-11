@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>User Management</title>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <h1>User Management</h1>
+
+    <h2>Add User</h2>
+    <form id="addUserForm">
+      <label for="name">Name:</label>
+      <input type="text" id="name" name="name" required /><br /><br />
+
+      <label for="email">Email:</label>
+      <input type="email" id="email" name="email" required /><br /><br />
+
+      <button type="submit">Add User</button>
+    </form>
+
+    <h2>Users List</h2>
+    <ul id="userList"></ul>
+
+    <script>
+      document
+        .getElementById("addUserForm")
+        .addEventListener("submit", async (event) => {
+          event.preventDefault();
+
+          const formData = new FormData(event.target);
+          const name = formData.get("name");
+          const email = formData.get("email");
+
+          try {
+            const response = await fetch("/users", {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json",
+              },
+              body: JSON.stringify({ name, email }),
+            });
+
+            const newUser = await response.json();
+            alert(
+              `User added successfully!\nName: ${newUser.name}\nEmail: ${newUser.email}`
+            );
+            event.target.reset(); // Reset the form
+            fetchUserList(); // Refresh the user list
+          } catch (error) {
+            console.error("Error adding user:", error);
+            alert("An error occurred while adding the user.");
+          }
+        });
+
+      async function fetchUserList() {
+        const response = await fetch("/users");
+        const userList = await response.json();
+
+        const userListElement = document.getElementById("userList");
+        userListElement.innerHTML = ""; // Clear the existing list
+
+        userList.forEach((user) => {
+          const li = document.createElement("li");
+          li.textContent = `ID: ${user.id}, Name: ${user.name}, Email: ${user.email}`;
+          userListElement.appendChild(li);
+        });
+      }
+
+      // Initial fetch to populate the user list
+      fetchUserList();
+    </script>
+  </body>
+</html>

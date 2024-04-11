@@ -1,0 +1,10 @@
+{
+  "name": "nodejs-three-tier-app",
+  "version": "1.0.0",
+  "description": "A simple Node.js app with three-tier architecture",
+  "main": "index.js",
+  "dependencies": {
+    "express": "^4.17.2",
+    "mysql2": "^2.3.0"
+  }
+}
